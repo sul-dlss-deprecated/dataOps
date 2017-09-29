@@ -1,0 +1,121 @@
+swagger: "2.0"
+info:
+  title: "Public SDR Metadata"
+  description: "This is an API for creating, updating, retrieving, and querying publicly-available metadata for objects in the Stanford Digital Repository. Each object then is given a dereferenceable IRI for retrieving metadata about an object for a given DRUID, version (presumed to be the current version if not specified), and format (presumed to be full public XML if not specified)."
+  version: "1.0.0"
+  contact:
+    email: "cmharlow@stanford.edu"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "sdr-metadata.sul.stanford.edu"
+basePath: "/v1"
+schemes:
+- "https"
+paths:
+  /public-metadata:
+    get:
+      summary: "Retrieve a list of DRUIDs that match a set of queries (default, return all) on the public metadata store."
+      operationId: PublicMetadataQuery
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        # pagination
+        - $ref: '#/parameters/page'
+        # basic queries
+        - $ref: '#/parameters/date-uploaded'
+        - $ref: '#/parameters/date-last-updated'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/PublicMetadataSet'
+        '404':
+          description: Not found.
+  /public-metadata/{druid}/{version}:
+    get:
+      summary: "Get a given representation / format (default, MODS/XML) of public metadata for the given DRUID & version."
+      description:
+      parameters:
+        - in: path
+          name: druid
+          schema:
+            type: string
+          required: true
+          description: the DRUID for the public metadata record to retrieve.
+        - in: path
+          name: version
+          schema:
+            type: integer
+          required: true
+          description: the version of the public metadata record to retrieve. Implementation defaults to the latest version if the user does not supply a version.
+        - $ref: '#/parameters/format'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/MetadataRecord'
+        '404':
+          description: Not found.
+    post:
+      summary: "Upload (create new or overwrite existing) a public metadata record for a given DRUID & version."
+      parameters:
+        - in: path
+          name: druid
+          schema:
+            type: string
+          required: true
+          description: the DRUID for the public metadata record to upload.
+        - in: path
+          name: version
+          schema:
+            type: string
+          required: true
+          description: the DRUID for the public metadata record to upload.
+        - in: "body"
+          name: "body"
+          description: "SDR Metadata Record (XML) to be uploaded to public metadata."
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataRecord"
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: The request could not be interpreted'
+        '405':
+          description: "Invalid input"
+definitions:
+  PublicMetadataSet:
+    description: 'List of metadata record DRUIDs and versions matching the supplied query.'
+    type: list
+    required:
+    properties:
+  MetadataRecord:
+    description:
+    type:
+    required:
+    properties:
+parameters:
+  page:
+    name: page
+    in: query
+    type: integer
+    required: false
+    description: "One-based index for pagination"
+  date-uploaded:
+    name: date-uploaded
+    type: string
+    format: date-time
+    in: query
+    required: false
+    description: "Match SDR public metadata objects that were uploaded strictly before the time given according to RFC3339."
+  date-last-updated:
+    name: date-last-updated
+    type: string
+    format: date-time
+    in: query
+    required: false
+    description: "Match SDR public metadata objects that were last updated strictly before the time given according to RFC3339."
