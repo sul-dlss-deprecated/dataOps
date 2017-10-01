@@ -14,7 +14,6 @@ info:
     name: MIT
 basePath: "/v1/public"
 schemes:
-- http
 - https
 paths:
   "/metadata":
@@ -22,6 +21,8 @@ paths:
       description: Retrieve a list of DRUIDs that match a set of queries (default,
         return all) on the public metadata store.
       operationId: PublicMetadataQuery
+      consumes:
+      - application/json
       produces:
       - application/json
       - text/html
@@ -42,18 +43,14 @@ paths:
         '200':
           description: A list of DRUIDs with public metadata records available.
           schema:
-            type: array
-            items:
-              "$ref": "#/definitions/DruidList"
-        default:
-          description: unexpected error
-          schema:
-            "$ref": "#/definitions/ErrorModel"
+            "$ref": "#/definitions/DruidList"
   "/metadata/{druid}":
     get:
       description: Get a given representation / format (default, IR JSON) of public
         metadata for the given DRUID.
       operationId: getMetadataByDRUID
+      consumes:
+      - application/json
       produces:
       - application/json
       - application/xml
@@ -70,10 +67,6 @@ paths:
           description: A Public Metadata Record for the given DRUID.
           schema:
             "$ref": "#/definitions/PublicMetadata"
-        default:
-          description: unexpected error
-          schema:
-            "$ref": "#/definitions/ErrorModel"
     post:
       description: Upload (create new or overwrite existing) a public metadata record
         for a given DRUID.
@@ -81,7 +74,7 @@ paths:
       produces:
       - application/json
       consumes:
-      - multipart/form-data
+      - application/json
       parameters:
       - name: druid
         in: path
@@ -89,19 +82,16 @@ paths:
         required: true
         type: string
       - name: metadata
-        in: formData
+        in: body
         description: Public Metadata to be uploaded
         required: true
-        type: file
+        schema:
+          "$ref": "#/definitions/PublicMetadata"
       responses:
         '200':
           description: Public Metadata
           schema:
             "$ref": "#/definitions/PublicMetadata"
-        default:
-          description: unexpected error
-          schema:
-            "$ref": "#/definitions/ErrorModel"
 definitions:
   PublicMetadata:
     type: object
