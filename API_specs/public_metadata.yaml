@@ -1,187 +1,134 @@
-{
-  "swagger": "2.0",
-  "info": {
-    "version": "1.0.0",
-    "title": "Public SDR Metadata",
-    "description": "This is an API for creating, updating, retrieving, and querying publicly-available metadata for objects in the Stanford Digital Repository. Each object then is given a dereferenceable IRI for retrieving metadata about an object for a given DRUID and format.",
-    "contact": {
-      "name": "Christina Harlow",
-      "email": "cmharlow@stanford.edu"
-    },
-    "license": {
-      "name": "MIT"
-    }
-  },
-  "basePath": "/v1/public",
-  "schemes": [
-    "http",
-    "https"
-  ],
-  "paths": {
-    "/metadata": {
-      "get": {
-        "description": "Retrieve a list of DRUIDs that match a set of queries (default, return all) on the public metadata store.",
-        "operationId": "PublicMetadataQuery",
-        "produces": [
-          "application/json",
-          "text/html"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "One-based index for pagination",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "date-updated",
-            "in": "query",
-            "description": "Match SDR public metadata objects that were uploaded strictly before the time given according to RFC3339",
-            "required": false,
-            "type": "string",
-            "format": "date"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of DRUIDs with public metadata records available.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DruidList"
-              }
-            }
-          },
-          "default": {
-            "description": "unexpected error",
-            "schema": {
-              "$ref": "#/definitions/ErrorModel"
-            }
-          }
-        }
-      }
-    },
-    "/metadata/{druid}": {
-      "get": {
-        "description": "Get a given representation / format (default, IR JSON) of public metadata for the given DRUID.",
-        "operationId": "getMetadataByDRUID",
-        "produces": [
-          "application/json",
-          "application/xml",
-          "text/xml",
-          "text/html"
-        ],
-        "parameters": [
-          {
-            "name": "druid",
-            "in": "path",
-            "description": "DRUID of Metadata Record to retrieve",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A Public Metadata Record for the given DRUID.",
-            "schema": {
-              "$ref": "#/definitions/PublicMetadata"
-            }
-          },
-          "default": {
-            "description": "unexpected error",
-            "schema": {
-              "$ref": "#/definitions/ErrorModel"
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Upload (create new or overwrite existing) a public metadata record for a given DRUID.",
-        "operationId": "uploadPublicMetadata",
-        "produces": [
-          "application/json"
-        ],
-        "consumes": [
-          "multipart/form-data"
-        ],
-        "parameters": [
-          {
-            "name": "druid",
-            "in": "path",
-            "description": "DRUID of Public Metadata being uploaded",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "metadata",
-            "in": "formData",
-            "description": "Public Metadata to be uploaded",
-            "required": true,
-            "type": "file"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Public Metadata",
-            "schema": {
-              "$ref": "#/definitions/PublicMetadata"
-            }
-          },
-          "default": {
-            "description": "unexpected error",
-            "schema": {
-              "$ref": "#/definitions/ErrorModel"
-            }
-          }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "PublicMetadata": {
-      "type": "object",
-      "required": [
-        "druid",
-        "record",
-        "date_uploaded"
-      ],
-      "properties": {
-        "druid": {
-          "type": "string"
-        },
-        "record": {
-          "type": "object"
-        },
-        "date_uploaded": {
-          "type": "string",
-          "format": "date"
-        }
-      }
-    },
-    "DruidList": {
-      "type": "array",
-      "items": [
-        {
-          "$ref": "#/definitions/PublicMetadata"
-        }
-      ]
-    },
-    "ErrorModel": {
-      "type": "object",
-      "required": [
-        "code",
-        "message"
-      ],
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    }
-  }
-}
+---
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Public SDR Metadata
+  description: This is an API for creating, updating, retrieving, and querying publicly-available
+    metadata for objects in the Stanford Digital Repository. Each object then is given
+    a dereferenceable IRI for retrieving metadata about an object for a given DRUID
+    and format.
+  contact:
+    name: Christina Harlow
+    email: cmharlow@stanford.edu
+  license:
+    name: MIT
+basePath: "/v1/public"
+schemes:
+- http
+- https
+paths:
+  "/metadata":
+    get:
+      description: Retrieve a list of DRUIDs that match a set of queries (default,
+        return all) on the public metadata store.
+      operationId: PublicMetadataQuery
+      produces:
+      - application/json
+      - text/html
+      parameters:
+      - name: page
+        in: query
+        description: One-based index for pagination
+        required: false
+        type: integer
+      - name: date-updated
+        in: query
+        description: Match SDR public metadata objects that were uploaded strictly
+          before the time given according to RFC3339
+        required: false
+        type: string
+        format: date
+      responses:
+        '200':
+          description: A list of DRUIDs with public metadata records available.
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/DruidList"
+        default:
+          description: unexpected error
+          schema:
+            "$ref": "#/definitions/ErrorModel"
+  "/metadata/{druid}":
+    get:
+      description: Get a given representation / format (default, IR JSON) of public
+        metadata for the given DRUID.
+      operationId: getMetadataByDRUID
+      produces:
+      - application/json
+      - application/xml
+      - text/xml
+      - text/html
+      parameters:
+      - name: druid
+        in: path
+        description: DRUID of Metadata Record to retrieve
+        required: true
+        type: string
+      responses:
+        '200':
+          description: A Public Metadata Record for the given DRUID.
+          schema:
+            "$ref": "#/definitions/PublicMetadata"
+        default:
+          description: unexpected error
+          schema:
+            "$ref": "#/definitions/ErrorModel"
+    post:
+      description: Upload (create new or overwrite existing) a public metadata record
+        for a given DRUID.
+      operationId: uploadPublicMetadata
+      produces:
+      - application/json
+      consumes:
+      - multipart/form-data
+      parameters:
+      - name: druid
+        in: path
+        description: DRUID of Public Metadata being uploaded
+        required: true
+        type: string
+      - name: metadata
+        in: formData
+        description: Public Metadata to be uploaded
+        required: true
+        type: file
+      responses:
+        '200':
+          description: Public Metadata
+          schema:
+            "$ref": "#/definitions/PublicMetadata"
+        default:
+          description: unexpected error
+          schema:
+            "$ref": "#/definitions/ErrorModel"
+definitions:
+  PublicMetadata:
+    type: object
+    required:
+    - druid
+    - record
+    - date_uploaded
+    properties:
+      druid:
+        type: string
+      record:
+        type: object
+      date_uploaded:
+        type: string
+        format: date
+  DruidList:
+    type: array
+    items:
+    - "$ref": "#/definitions/PublicMetadata"
+  ErrorModel:
+    type: object
+    required:
+    - code
+    - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
