@@ -1,0 +1,99 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "SURI Proxy",
+    "description": "A Proxy API for calling SURI, primarily for usage by AWS applications.",
+    "contact": {
+      "name": "Christina Harlow",
+      "email": "cmharlow@stanford.edu"
+    }
+  },
+  "schemes": ["https"],
+  "produces": ["application/json", "text/text"],
+  "paths": {
+    "/druid": {
+      "get": {
+        "operationId": "getDRUIDInfo",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Information on DRUID Namespace",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Namespace"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/druid/identifiers": {
+      "get": {
+        "operationId": "getCurrentDRUIDs",
+        "responses": {
+          "200": {
+            "description": "List of DRUIDs currently being used",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Identifiers"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "mintNewDRUIDs",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "quantity",
+            "required": false,
+            "type": "integer",
+            "description": "Number of DRUIDs to mint. Default is 1."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New DRUIDs Created",
+            "schema": {
+              "$ref": "#/definitions/Identifiers"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Namespace": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        }
+      },
+      "required": ["name", "template"]
+    },
+    "Identifiers": {
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/Identifier"
+      }
+    },
+    "Identifier": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": ["id"]
+    }
+  }
+}
