@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "SURI Proxy",
-    "description": "A Proxy API for calling SURI, primarily for usage by AWS applications.",
+    "description": "A Proxy API for calling identifier services, mainly SURI, primarily for usage by AWS applications.",
     "contact": {
       "name": "Christina Harlow",
       "email": "cmharlow@stanford.edu"
@@ -12,26 +12,45 @@
   "schemes": ["https"],
   "produces": ["application/json", "text/text"],
   "paths": {
-    "/druid": {
+    "/identifiers": {
       "get": {
-        "operationId": "getDRUIDInfo",
+        "operationId": "getIdentifiersInfo",
         "produces": [
           "application/json"
         ],
         "responses": {
           "200": {
-            "description": "Information on DRUID Namespace",
+            "description": "Get a list of identifier types & sources supported",
             "schema": {
               "type": "object",
               "items": {
-                "$ref": "#/definitions/Namespace"
+                "$ref": "#/definitions/Source"
               }
             }
           }
         }
       }
     },
-    "/druid/identifiers": {
+    "/identifiers/all": {
+      "get": {
+        "operationId": "getIdentifiersList",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get a list of all Identifiers minted across types",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Sources"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/identifiers/druids": {
       "get": {
         "operationId": "getCurrentDRUIDs",
         "responses": {
@@ -68,7 +87,7 @@
     }
   },
   "definitions": {
-    "Namespace": {
+    "Source": {
       "type": "object",
       "properties": {
         "name": {
@@ -80,10 +99,10 @@
       },
       "required": ["name", "template"]
     },
-    "Identifiers": {
+    "Sources": {
       "type": "array",
       "items": {
-        "$ref" : "#/definitions/Identifier"
+        "$ref" : "#/definitions/Source"
       }
     },
     "Identifier": {
@@ -94,6 +113,12 @@
         }
       },
       "required": ["id"]
+    },
+    "Identifiers": {
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/Identifier"
+      }
     }
   }
 }
