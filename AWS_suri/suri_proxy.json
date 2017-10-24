@@ -22,10 +22,7 @@
           "200": {
             "description": "Get a list of identifier types & sources supported",
             "schema": {
-              "type": "object",
-              "items": {
-                "$ref": "#/definitions/Source"
-              }
+                "$ref": "#/definitions/Sources"
             }
           }
         }
@@ -41,10 +38,7 @@
           "200": {
             "description": "Get a list of all Identifiers minted across types",
             "schema": {
-              "type": "object",
-              "items": {
-                "$ref": "#/definitions/Sources"
-              }
+              "$ref": "#/definitions/Sources"
             }
           }
         }
