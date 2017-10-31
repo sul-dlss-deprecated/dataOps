@@ -20,7 +20,7 @@ retries = requests.adapters.HTTPAdapter(max_retries=retry)
 # DRUID Namespace variables
 druid_username = os.environ['druid_username']
 druid_pword = os.environ['druid_pword']
-suri_ns_url = "https://{0}:{1}@sul-lyberservices-{2}.stanford.edup/suri2/namespaces/druid"
+suri_ns_url = "https://{0}:{1}@sul-lyberservices-{2}.stanford.edu/suri2/namespaces/druid"
 druid_ns_url = suri_ns_url.format(druid_username, druid_pword, api_env)
 druid_ns_url_safe = suri_ns_url.format(druid_username, "password", api_env)
 
