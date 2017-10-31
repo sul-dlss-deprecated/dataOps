@@ -46,7 +46,7 @@ def handler(event, context):
         return(sources)
     except requests.exceptions.RequestException as e:
         exception_class = e.__class__.__name__
-        exception_msg = e.message
+        exception_msg = e
         handle_network_errors(exception_class, exception_msg)
 
 
