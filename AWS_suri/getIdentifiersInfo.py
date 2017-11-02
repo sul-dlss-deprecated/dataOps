@@ -43,7 +43,8 @@ def handler(event, context):
             source['name'] = ns.find('name').text
             source['template'] = ns.find('template').text
             sources.append(source)
-        return(sources)
+
+        return({'body': sources})
     except requests.exceptions.RequestException as e:
         exception_class = e.__class__.__name__
         exception_msg = e
